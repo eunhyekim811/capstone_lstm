@@ -1,8 +1,8 @@
 import threading
 import time
-from utils.collect_data import start_collection
+from utils.collect import start_collection
 from utils.train_model import train
-from utils.predict_and_act import predict
+from utils.predict import predict
 
 # 로그 수집 스레드
 def run_data_collection():

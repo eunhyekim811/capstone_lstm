@@ -18,7 +18,7 @@ lstm/
 │   ├── train_model.py       # 예측 후 자동 정리 작동 스크립트
 │   └── cleanup.py               # 실제 파일 정리 기능 구현
 │
-├── scheduler.py           # 일정 시간마다 예측 → 정리 실행
+├── main.py
 ├── requirements.txt             # 필요한 패키지 목록
 └── README.md                    # 실행 방법 및 설명 문서
 ```
