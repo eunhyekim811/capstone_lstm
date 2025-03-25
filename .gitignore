@@ -1,3 +1,6 @@
 __pycache__/
-*.h5
-*.csv
+
+idle_predictor.h5
+idle_predictor.keras
+
+user_log.csv
