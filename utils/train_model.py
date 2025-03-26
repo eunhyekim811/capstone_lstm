@@ -35,8 +35,8 @@ def train():
     # y : 학습 출력 데이터(유휴 여부)
     # epochs : 학습 반복 횟수
     # batch_size : 한 번에 학습할 데이터 개수
-    # verbose : 학습 과정 출력 여부(1: epoch마다 출력, 0: 진행상황 출력X, 2: 간략 출력력)
-    model.fit(X, y, epochs=5, batch_size=32, verbose=0)
+    # verbose : 학습 과정 출력 여부(1: epoch마다 출력, 0: 진행상황 출력X, 2: 간략 출력)
+    model.fit(X, y, epochs=5, batch_size=32, verbose=1)
 
     # 학습된 모델 저장(없는 경우 자동 생성)
     os.makedirs("model", exist_ok=True)  # model 디렉토리가 없으면 생성

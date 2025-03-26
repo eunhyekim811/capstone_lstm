@@ -18,7 +18,7 @@ def predict():
     # 학습된 모델 로드
     model = load_model("model/idle_predictor.keras")
 
-    # 가장 최신 10분 예측
+    # 가장 최신 10분 동안의 데이터를 통해 현재 유휴 상태일 확률 예측
     pred = model.predict(np.array([X[-1]]))[0][0]
 
     print(f"예측 결과 : {pred}")
