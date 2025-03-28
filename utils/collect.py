@@ -11,7 +11,7 @@ keyboard_count = 0
 # 전역 stop_event 변수 생성
 stop_event = threading.Event()
 
-# 마우스, 키보드 입력 감지지
+# 마우스, 키보드 입력 감지
 def on_move(x, y): 
     global mouse_count
     mouse_count += 1
