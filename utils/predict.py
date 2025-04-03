@@ -10,7 +10,7 @@ from datetime import datetime
 def log_prediction(timestamp, predicted):
     log_dir = "logs"
     os.makedirs(log_dir, exist_ok=True)
-    log_path = os.path.join(log_dir, "predictions.csv")
+    log_path = os.path.join(log_dir, "predictions3.csv")
 
     # 예측 결과 로그 파일에 추가
     with open(log_path, "a", newline="") as f:
@@ -21,9 +21,9 @@ def log_prediction(timestamp, predicted):
 
 
 def predict():
-    window_size = 10
+    window_size = 20
     future_steps = 6
-    if not os.path.exists("model/idle_predictor2.keras"):
+    if not os.path.exists("model/idle_predictor3.keras"):
         print("모델 없음")
         return
 
@@ -34,7 +34,7 @@ def predict():
         return
 
     # 학습된 모델 로드
-    model = load_model("model/idle_predictor2.keras")
+    model = load_model("model/idle_predictor3.keras")
     # 디코더 입력: 0 벡터 (시작 토큰)
     decoder_start = np.zeros((1, future_steps, X.shape[2]))
     # 가장 최신 10분 동안의 데이터를 통해 현재 유휴 상태일 확률 예측
@@ -46,8 +46,10 @@ def predict():
     predicted = (pred > 0.5).astype(int)
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     log_prediction(timestamp, predicted)
+    
     # 전체 데이터 대상으로 모델 평가
-    loss, accuracy = model.evaluate(X, y, verbose=0)
+    decoder_input = np.zeros((len(X), future_steps, X.shape[2]))
+    loss, accuracy = model.evaluate([X, decoder_input], y, verbose=0)
     
     print("==============================================")
     print(f"전체 평가 결과 : 손실 {loss:.4f}, 정확도 {accuracy:.4f}")

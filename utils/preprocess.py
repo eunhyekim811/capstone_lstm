@@ -3,7 +3,7 @@ import numpy as np
 from sklearn.preprocessing import MinMaxScaler
 
 # 슬라이딩 윈도우 형태의 시계열 데이터로 구성
-def load_and_preprocess(path="data/user_log2.csv", window_size=10, future_steps=6):
+def load_and_preprocess(path="data/user_log3.csv", window_size=20, future_steps=6):
     df = pd.read_csv(path, header=None, names=["timestamp", "power", "mouse", "keyboard", "cpu", "disk","label"])
     
     # 전원이 켜진 데이터만 사용

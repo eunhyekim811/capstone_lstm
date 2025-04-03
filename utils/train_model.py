@@ -6,11 +6,11 @@ import os
 import numpy as np
 
 def train():
-    if not os.path.exists("data/user_log2.csv"):
+    if not os.path.exists("data/user_log3.csv"):
         print("데이터 없음")
         return
 
-    window_size = 10
+    window_size = 20
     future_steps = 6
     X, y, scaler = load_and_preprocess(window_size=window_size, future_steps=future_steps)
 
@@ -56,6 +56,6 @@ def train():
     # 학습된 모델 저장(없는 경우 자동 생성)
     if not os.path.exists("model"):
         os.makedirs("model", exist_ok=True)  # model 디렉토리가 없으면 생성
-    model.save("model/idle_predictor2.keras")
+    model.save("model/idle_predictor3.keras")
 
     print("모델 학습 및 저장 완료")

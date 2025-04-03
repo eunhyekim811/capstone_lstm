@@ -7,8 +7,8 @@ TIME_FORMAT = "%Y-%m-%d %H:%M:%S"
 
 def evaluate():
     # 예측 결과 로그 파일 읽기
-    prediction_log_path = "logs/predictions.csv"
-    actual_log_path = "data/user_log2.csv"
+    prediction_log_path = "logs/predictions3.csv"
+    actual_log_path = "data/user_log3.csv"
 
     if not os.path.exists(prediction_log_path):
         print("예측 로그 파일이 존재하지 않습니다.")
@@ -68,7 +68,7 @@ def evaluate():
         end_time = pred_time + timedelta(minutes=seq_length)
 
         # 실제 결과 중 해당 시간대에 속하는 데이터 추출
-        actual_values = [label for (actual_time, label) in actuals if start_time <= actual_time < end_time]
+        actual_values = [label for (actual_time, label) in actuals if start_time <= actual_time <= end_time]
         if len(actual_values) < seq_length:
             print("실제 결과 시간대에 데이터가 부족합니다.")
             continue

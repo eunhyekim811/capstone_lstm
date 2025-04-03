@@ -100,4 +100,4 @@ def run_periodic_load(duration=1, interval=5):
 
 if __name__ == "__main__":
     # 1분 실행, 5분 대기 주기로 실행 (원하는 시간으로 수정 가능)
-    run_periodic_load(duration=15, interval=900)
+    run_periodic_load(duration=5, interval=180)
