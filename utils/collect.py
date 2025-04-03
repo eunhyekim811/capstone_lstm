@@ -4,6 +4,8 @@ from pynput import mouse, keyboard
 from pynput.mouse import Listener as MouseListener
 from pynput.keyboard import Listener as KeyboardListener
 import threading
+from .power_check import check_power    
+from datetime import datetime
 
 mouse_count = 0
 keyboard_count = 0
@@ -36,13 +38,17 @@ def start_collection():
 
     # 1분 간격으로 현재 상태 기록
     while not stop_event.is_set():
+        power = check_power()
         cpu = psutil.cpu_percent()  # CPU 사용률
+        disk = psutil.disk_usage('/').percent  # 디스크 사용률
+        
         # 유휴 여부
-        # 마우스 클릭 수와 키보드 입력 수의 합이 3보다 작음 + cpu 사용률 10% 미만 -> 유휴
-        label = 1 if mouse_count + keyboard_count < 3 and cpu < 10 else 0
+        # 마우스 클릭 수와 키보드 입력 수의 합이 3보다 작음 + cpu 사용률 10% 미만 + 디스크 사용률 10% 미만 -> 유휴
+        label = 1 if mouse_count + keyboard_count < 5 and cpu < 0.8 and disk < 30 else 0
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-        with open("data/user_log.csv", "a") as log:
-            log.write(f"{time.time()},{mouse_count},{keyboard_count},{cpu},{label}\n")
+        with open("data/user_log3.csv", "a") as log:
+            log.write(f"{timestamp},{power},{mouse_count},{keyboard_count},{cpu},{disk},{label}\n")
 
         mouse_count = 0
         keyboard_count = 0
