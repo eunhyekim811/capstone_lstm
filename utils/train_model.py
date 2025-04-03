@@ -4,7 +4,7 @@ from .preprocess import load_and_preprocess
 import os
 
 def train():
-    if not os.path.exists("data/user_log.csv"):
+    if not os.path.exists("data/user_log2.csv"):
         print("데이터 없음")
         return
 
@@ -40,6 +40,6 @@ def train():
 
     # 학습된 모델 저장(없는 경우 자동 생성)
     os.makedirs("model", exist_ok=True)  # model 디렉토리가 없으면 생성
-    model.save("model/idle_predictor.keras")
+    model.save("model/idle_predictor2.keras")
 
     print("모델 학습 및 저장 완료")
