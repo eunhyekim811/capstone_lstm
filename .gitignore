@@ -3,3 +3,5 @@ __pycache__/
 idle_predictor*
 
 user_log*
+
+predictions*
