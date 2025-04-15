@@ -2,13 +2,14 @@ import os
 import csv
 from datetime import datetime, timedelta
 import numpy as np
+from .config import PREDICTIONS_LOG_FILE, USER_LOG_FILE
 
 TIME_FORMAT = "%Y-%m-%d %H:%M:%S"
 
 def evaluate():
     # 예측 결과 로그 파일 읽기
-    prediction_log_path = "logs/predictions3.csv"
-    actual_log_path = "data/user_log3.csv"
+    prediction_log_path = PREDICTIONS_LOG_FILE
+    actual_log_path = USER_LOG_FILE
 
     if not os.path.exists(prediction_log_path):
         print("예측 로그 파일이 존재하지 않습니다.")

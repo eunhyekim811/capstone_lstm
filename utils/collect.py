@@ -6,6 +6,7 @@ from pynput.keyboard import Listener as KeyboardListener
 import threading
 from .power_check import check_power    
 from datetime import datetime
+from .config import USER_LOG_FILE
 
 mouse_count = 0
 keyboard_count = 0
@@ -44,10 +45,10 @@ def start_collection():
         
         # 유휴 여부
         # 마우스 클릭 수와 키보드 입력 수의 합이 3보다 작음 + cpu 사용률 10% 미만 + 디스크 사용률 10% 미만 -> 유휴
-        label = 1 if mouse_count + keyboard_count < 5 and cpu < 0.8 and disk < 30 else 0
+        label = 1 if mouse_count + keyboard_count < 5 and cpu < 1.0 and disk < 30 else 0
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-        with open("data/user_log3.csv", "a") as log:
+        with open(USER_LOG_FILE, "a") as log:
             log.write(f"{timestamp},{power},{mouse_count},{keyboard_count},{cpu},{disk},{label}\n")
 
         mouse_count = 0
