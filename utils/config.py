@@ -7,9 +7,10 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = "data"
 MODEL_DIR = "model"
 LOG_DIR = "logs"
+TRAIN_DIR = "train"
 
 # 디렉토리가 없으면 생성
-for directory in [DATA_DIR, MODEL_DIR, LOG_DIR]:
+for directory in [DATA_DIR, MODEL_DIR, LOG_DIR, TRAIN_DIR]:
     if not os.path.exists(directory):
         os.makedirs(directory)
 
