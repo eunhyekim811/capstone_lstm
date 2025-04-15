@@ -5,12 +5,11 @@ from tensorflow.keras.models import load_model
 from .preprocess import load_and_preprocess
 import csv
 from datetime import datetime
+from .config import PREDICTIONS_LOG_FILE, MODEL_FILE
 
 # 예측 결과를 로그 파일에 저장
 def log_prediction(timestamp, predicted):
-    log_dir = "logs"
-    os.makedirs(log_dir, exist_ok=True)
-    log_path = os.path.join(log_dir, "predictions3.csv")
+    log_path = PREDICTIONS_LOG_FILE
 
     # 예측 결과 로그 파일에 추가
     with open(log_path, "a", newline="") as f:
@@ -23,7 +22,7 @@ def log_prediction(timestamp, predicted):
 def predict():
     window_size = 20
     future_steps = 6
-    if not os.path.exists("model/idle_predictor3.keras"):
+    if not os.path.exists(MODEL_FILE):
         print("모델 없음")
         return
 
@@ -34,7 +33,7 @@ def predict():
         return
 
     # 학습된 모델 로드
-    model = load_model("model/idle_predictor3.keras")
+    model = load_model(MODEL_FILE)
     # 디코더 입력: 0 벡터 (시작 토큰)
     decoder_start = np.zeros((1, future_steps, X.shape[2]))
     # 가장 최신 10분 동안의 데이터를 통해 현재 유휴 상태일 확률 예측
@@ -43,6 +42,7 @@ def predict():
     pred = pred.flatten()
 
     # 예측 결과 로그 파일에 추가
+    # 0, 1 두 가지 값 중 하나로 예측하도록 바꾸는데 0.5 이상이면 1로 예측
     predicted = (pred > 0.5).astype(int)
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     log_prediction(timestamp, predicted)
@@ -56,7 +56,7 @@ def predict():
     print(f"예측 결과 : {predicted} (원본: {pred})")
 
     # 유휴 상태 예측 결과 출력
-    if pred.mean() > 0.75:
+    if pred.mean() > 0.6:
         print("30분간 유휴 상태 → 파일 정리 시작")
     else:
         print("활성 상태 → 대기 중")
