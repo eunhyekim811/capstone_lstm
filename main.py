@@ -4,6 +4,7 @@ from utils.collect import start_collection, stop_event
 from utils.train_model import train
 from utils.predict import predict
 from utils.evaluate import evaluate
+from config.db_config import init_db, DatabaseManager
 
 # 로그 수집 스레드
 def run_data_collection():
@@ -39,6 +40,10 @@ def run_evaluation():
             evaluate()
 
 if __name__ == "__main__":
+
+    # 데이터베이스 초기화
+    init_db()
+
     try:
         t1 = threading.Thread(target=run_data_collection)
         t2 = threading.Thread(target=run_training)
@@ -62,5 +67,8 @@ if __name__ == "__main__":
         t2.join()
         t3.join()
         t4.join()
+
+        # 데이터베이스 연결 종료
+        DatabaseManager().close()
 
         print(">> 프로그램이 정상적으로 종료되었습니다.")

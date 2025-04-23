@@ -5,3 +5,7 @@ idle_predictor*
 user_log*
 
 predictions*
+
+.env
+
+train/

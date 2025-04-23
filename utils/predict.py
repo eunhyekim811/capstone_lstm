@@ -3,25 +3,36 @@ import pandas as pd
 import os
 from tensorflow.keras.models import load_model
 from .preprocess import load_and_preprocess
-import csv
 from datetime import datetime
-from .config import PREDICTIONS_LOG_FILE, MODEL_FILE
+from config.db_config import DatabaseManager
+from config.config import MODEL_FILE
+import uuid
+from mysql.connector import Error
 
-# 예측 결과를 로그 파일에 저장
-def log_prediction(timestamp, predicted):
-    log_path = PREDICTIONS_LOG_FILE
-
-    # 예측 결과 로그 파일에 추가
-    with open(log_path, "a", newline="") as f:
-        writer = csv.writer(f)
-        # 시퀀스 값을 세미콜론으로 구분하여 하나의 문자열로 저장
-        predicted_str = ";".join(map(str, predicted))
-        writer.writerow([timestamp, predicted_str])
-
+def log_prediction(uid, timestamp, predicted):
+    """예측 결과를 데이터베이스에 저장"""
+    db = DatabaseManager()
+    connection = db.get_connection()
+    if connection:
+        try:
+            cursor = connection.cursor()
+            query = """
+                INSERT INTO predictLog (uid, timestamp, m1, m2, m3, m4, m5, m6)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+            """
+            # NumPy int64를 Python int로 변환
+            values = (uid, timestamp, *[int(x) for x in predicted])
+            cursor.execute(query, values)
+            connection.commit()
+        except Error as e:
+            print(f"예측 결과 저장 오류: {e}")
+        finally:
+            cursor.close()
 
 def predict():
     window_size = 20
     future_steps = 6
+    
     if not os.path.exists(MODEL_FILE):
         print("모델 없음")
         return
@@ -45,7 +56,25 @@ def predict():
     # 0, 1 두 가지 값 중 하나로 예측하도록 바꾸는데 0.5 이상이면 1로 예측
     predicted = (pred > 0.5).astype(int)
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    log_prediction(timestamp, predicted)
+    
+    # 현재 사용자의 uid 가져오기
+    db = DatabaseManager()
+    connection = db.get_connection()
+    if connection:
+        try:
+            cursor = connection.cursor()
+            mac = uuid.getnode()
+            cursor.execute("SELECT uid FROM user WHERE mac = %s", (mac,))
+            result = cursor.fetchone()
+            if result:
+                uid = result[0]
+                log_prediction(uid, timestamp, predicted)
+            else:
+                print("사용자 ID를 찾을 수 없습니다.")
+        except Error as e:
+            print(f"사용자 ID 조회 오류: {e}")
+        finally:
+            cursor.close()
     
     # 전체 데이터 대상으로 모델 평가
     decoder_input = np.zeros((len(X), future_steps, X.shape[2]))

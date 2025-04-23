@@ -6,7 +6,8 @@ from pynput.keyboard import Listener as KeyboardListener
 import threading
 from .power_check import check_power    
 from datetime import datetime
-from .config import USER_LOG_FILE
+import uuid
+from config.db_config import DatabaseManager, add_user
 
 mouse_count = 0
 keyboard_count = 0
@@ -25,10 +26,40 @@ def on_press(key):
     global keyboard_count
     keyboard_count += 1
 
+def save_to_db(timestamp, power, mouse_count, keyboard_count, cpu, disk, label, uid):
+    db = DatabaseManager()
+    connection = db.get_connection()
+    if connection:
+        try:
+            cursor = connection.cursor()
+            
+            query = """
+                INSERT INTO collectLog 
+                (uid, timestamp, power_status, mouse_count, keyboard_count, cpu_usage, disk_usage, is_idle)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+            """
+            values = (uid, timestamp, power, mouse_count, keyboard_count, cpu, disk, bool(label))
+            cursor.execute(query, values)
+            connection.commit()
+        except Error as e:
+            print(f"데이터 저장 오류: {e}")
+        finally:
+            cursor.close()
+
 def start_collection():
     global mouse_count, keyboard_count
     mouse_count = 0
     keyboard_count = 0
+
+    # MAC 주소를 기반으로 사용자 등록 및 uid 가져오기
+    mac = uuid.getnode()  # MAC 주소를 정수로 사용
+    uid = add_user(mac)
+    
+    print(mac)
+
+    if uid is None:
+        print("사용자 등록 실패. 데이터 수집을 중단합니다.")
+        return
 
     # 마우스/키보드 리스너 등록
     mouse_listener = MouseListener(on_move=on_move, on_click=on_click)
@@ -48,8 +79,8 @@ def start_collection():
         label = 1 if mouse_count + keyboard_count < 5 and cpu < 1.0 and disk < 30 else 0
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-        with open(USER_LOG_FILE, "a") as log:
-            log.write(f"{timestamp},{power},{mouse_count},{keyboard_count},{cpu},{disk},{label}\n")
+        # 데이터베이스에 저장
+        save_to_db(timestamp, power, mouse_count, keyboard_count, cpu, disk, label, uid)
 
         mouse_count = 0
         keyboard_count = 0
