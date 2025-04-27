@@ -14,9 +14,9 @@ def run_data_collection():
 # 주기적 모델 학습 스레드
 def run_training():
     while not stop_event.is_set():
-        print(">> 모델 학습 대기 중 (10분마다 확인)")
+        print(">> 모델 학습 대기 중 (15분마다 확인)")
         # 10분 대기하되, stop_event가 설정되면 즉시 종료
-        if stop_event.wait(600):  # 10분 간격 학습
+        if stop_event.wait(900):  # 15분 간격 학습
             return
         if not stop_event.is_set():
             train()
@@ -24,17 +24,17 @@ def run_training():
 # 예측 및 파일 정리 스레드
 def run_prediction():
     while not stop_event.is_set():
-        print(">> 모델 예측 대기 중 (5분마다 확인)")
+        print(">> 모델 예측 대기 중 (30분마다 확인)")
         # 5분 대기하되, stop_event가 설정되면 즉시 종료
-        if stop_event.wait(300):  # 5분 간격 예측
+        if stop_event.wait(1800):  # 30분 간격 예측
             return
         if not stop_event.is_set():
             predict()
 
 def run_evaluation():
     while not stop_event.is_set():
-        print(">> 평가 대기 중 (15분마다 확인)")
-        if stop_event.wait(900):  # 15분 간격 평가
+        print(">> 평가 대기 중 (60분마다 확인)")
+        if stop_event.wait(3600):  # 60분 간격 평가
             return
         if not stop_event.is_set():
             evaluate()
