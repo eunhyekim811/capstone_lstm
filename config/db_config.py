@@ -89,6 +89,7 @@ def init_db():
                     m3 INT,
                     m4 INT,
                     m5 INT,
+                    m6 INT,
                     FOREIGN KEY (uid) REFERENCES user(uid)
                 )
             """)
