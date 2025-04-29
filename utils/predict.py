@@ -1,4 +1,5 @@
 import numpy as np
+import subprocess
 import pandas as pd
 import os
 from tensorflow.keras.models import load_model
@@ -8,6 +9,10 @@ from config.db_config import DatabaseManager
 from config.config import MODEL_FILE
 import uuid
 from mysql.connector import Error
+
+def call_fileindexing():
+    project_path = r"C:\Users\qazws\git연습용\fileindexingproject\main.py"
+    subprocess.run(["python", project_path, "auto"], check=True)
 
 def log_prediction(uid, timestamp, predicted):
     """예측 결과를 데이터베이스에 저장"""
@@ -87,6 +92,7 @@ def predict():
     # 유휴 상태 예측 결과 출력
     if pred.mean() > 0.6:
         print("30분간 유휴 상태 → 파일 정리 시작")
+        call_fileindexing()
     else:
         print("활성 상태 → 대기 중")
     print("==============================================")
