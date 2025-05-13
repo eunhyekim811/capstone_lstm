@@ -11,7 +11,7 @@ import uuid
 from mysql.connector import Error
 
 def call_fileindexing():
-    project_path = r"C:\Users\qazws\git연습용\fileindexingproject\main.py"
+    project_path = r"C:\Users\default.DESKTOP-A742PF6\Desktop\H\capstone\Local-File-Organizer\fileindexingproject\main.py"
     subprocess.run(["python", project_path, "auto"], check=True)
 
 def log_prediction(uid, timestamp, predicted):
@@ -90,7 +90,7 @@ def predict():
     print(f"예측 결과 : {predicted} (원본: {pred})")
 
     # 유휴 상태 예측 결과 출력
-    if pred.mean() > 0.6:
+    if pred.mean() > 0.55:
         print("30분간 유휴 상태 → 파일 정리 시작")
         call_fileindexing()
     else:

@@ -8,6 +8,7 @@ from .power_check import check_power
 from datetime import datetime
 import uuid
 from config.db_config import DatabaseManager, add_user
+import statistics
 
 mouse_count = 0
 keyboard_count = 0
@@ -46,7 +47,27 @@ def save_to_db(timestamp, power, mouse_count, keyboard_count, cpu, disk, label, 
         finally:
             cursor.close()
 
-def start_collection():
+def calibrate(duration=600, interval=5):  #duration(초) 동안 interval(초) 간격으로 샘플 수집
+    samples = []
+    end_time = time.time() + duration
+
+    print(f"[Calibration] {duration}s 동안 샘플 수집을 시작합니다...")
+    while time.time() < end_time:
+        cpu = psutil.cpu_percent(interval=None)
+        disk = psutil.disk_usage('/').percent
+        samples.append((cpu, disk))
+        time.sleep(interval)
+
+    print(f"[Calibration] 샘플 수집 완료. {len(samples)}개 샘플 수집")
+    
+    cpus, disks = zip(*samples)
+    cpu_threshold = statistics.mean(cpus) + 2 * statistics.stdev(cpus)
+    disk_threshold = statistics.mean(disks) + 2 * statistics.stdev(disks)
+    print(f"[Calibration 완료] cpu_thr={cpu_threshold:.2f}, disk_thr={disk_threshold:.2f}")
+
+    return cpu_threshold, disk_threshold
+        
+def start_collection(cpu_threshold, disk_threshold):
     global mouse_count, keyboard_count
     mouse_count = 0
     keyboard_count = 0
@@ -76,7 +97,7 @@ def start_collection():
         
         # 유휴 여부
         # 마우스 클릭 수와 키보드 입력 수의 합이 3보다 작음 + cpu 사용률 10% 미만 + 디스크 사용률 10% 미만 -> 유휴
-        label = 1 if mouse_count + keyboard_count < 5 and cpu < 1.0 and disk < 30 else 0
+        label = 1 if (mouse_count + keyboard_count < 5 and cpu < cpu_threshold and disk < disk_threshold) else 0
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
         # 데이터베이스에 저장
