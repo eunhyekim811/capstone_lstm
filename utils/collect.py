@@ -9,6 +9,7 @@ from datetime import datetime
 import uuid
 from config.db_config import DatabaseManager, add_user
 import statistics
+from mysql.connector import Error
 
 mouse_count = 0
 keyboard_count = 0
@@ -47,7 +48,7 @@ def save_to_db(timestamp, power, mouse_count, keyboard_count, cpu, disk, label, 
         finally:
             cursor.close()
 
-def calibrate(duration=600, interval=5):  #duration(초) 동안 interval(초) 간격으로 샘플 수집
+def calibrate(duration=300, interval=10):  #duration(초) 동안 interval(초) 간격으로 샘플 수집
     samples = []
     end_time = time.time() + duration
 
@@ -61,13 +62,13 @@ def calibrate(duration=600, interval=5):  #duration(초) 동안 interval(초) �
     print(f"[Calibration] 샘플 수집 완료. {len(samples)}개 샘플 수집")
     
     cpus, disks = zip(*samples)
-    cpu_threshold = statistics.mean(cpus) + 2 * statistics.stdev(cpus)
-    disk_threshold = statistics.mean(disks) + 2 * statistics.stdev(disks)
+    cpu_threshold = statistics.mean(cpus)
+    disk_threshold = statistics.mean(disks)
     print(f"[Calibration 완료] cpu_thr={cpu_threshold:.2f}, disk_thr={disk_threshold:.2f}")
 
     return cpu_threshold, disk_threshold
         
-def start_collection(cpu_threshold, disk_threshold):
+def start_collection(cpu_threshold, disk_threshold):   # count 테이블에 현재 시간 저장 (=시작 시간)
     global mouse_count, keyboard_count
     mouse_count = 0
     keyboard_count = 0
@@ -81,6 +82,26 @@ def start_collection(cpu_threshold, disk_threshold):
     if uid is None:
         print("사용자 등록 실패. 데이터 수집을 중단합니다.")
         return
+
+    # count 테이블에 초기 데이터 삽입
+    db = DatabaseManager()
+    connection = db.get_connection()
+    if connection:
+        try:
+            cursor = connection.cursor()
+            # 해당 uid에 대한 count 테이블 데이터가 있는지 확인
+            cursor.execute("SELECT id FROM count WHERE uid = %s", (uid,))
+            if cursor.fetchone() is None:
+                # 데이터가 없으면 현재 시간으로 초기 데이터 삽입
+                current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                cursor.execute("INSERT INTO count (uid, last_training_time) VALUES (%s, %s)", 
+                             (uid, current_time))
+                connection.commit()
+                print(f"사용자 {uid}의 count 테이블 초기 데이터가 생성되었습니다.")
+        except Error as e:
+            print(f"count 테이블 데이터 삽입 오류: {e}")
+        finally:
+            cursor.close()
 
     # 마우스/키보드 리스너 등록
     mouse_listener = MouseListener(on_move=on_move, on_click=on_click)

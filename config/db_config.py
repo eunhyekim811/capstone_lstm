@@ -93,6 +93,15 @@ def init_db():
                     FOREIGN KEY (uid) REFERENCES user(uid)
                 )
             """)
+
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS count (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    uid INT,
+                    last_training_time DATETIME,
+                    FOREIGN KEY (uid) REFERENCES user(uid)
+                )
+            """)
             
             connection.commit()
             print("데이터베이스와 테이블이 성공적으로 생성되었습니다.")

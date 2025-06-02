@@ -3,6 +3,7 @@ import numpy as np
 from sklearn.preprocessing import MinMaxScaler
 import uuid
 from config.db_config import DatabaseManager
+from mysql.connector import Error
 
 def get_user_id():
     """현재 컴퓨터의 MAC 주소에 해당하는 uid를 반환"""
@@ -34,15 +35,26 @@ def load_and_preprocess(window_size=20, future_steps=6):
     if connection:
         try:
             cursor = connection.cursor()
+
+            # 해당 uid의 마지막 학습 시간 조회
+            cursor.execute("""
+                SELECT last_training_time 
+                FROM count 
+                WHERE uid = %s
+            """, (uid,))
+            result = cursor.fetchone()
+            last_training_time = result[0] if result else None
+
             # 해당 사용자의 데이터만 가져오기
             query = """
                 SELECT timestamp, power_status, mouse_count, keyboard_count, 
                        cpu_usage, disk_usage, is_idle 
                 FROM collectLog 
                 WHERE uid = %s 
+                AND timestamp > %s
                 ORDER BY timestamp
             """
-            cursor.execute(query, (uid,))
+            cursor.execute(query, (uid, last_training_time))
             columns = ["timestamp", "power", "mouse", "keyboard", "cpu", "disk", "label"]
             data = cursor.fetchall()
             

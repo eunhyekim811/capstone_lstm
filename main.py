@@ -45,7 +45,7 @@ if __name__ == "__main__":
     init_db()
 
     # 초기 샘플 수집해 임계값 설정
-    cpu_threshold, disk_threshold = calibrate(duration=600, interval=5)
+    cpu_threshold, disk_threshold = calibrate(duration=300, interval=10)
 
     try:
         t1 = threading.Thread(target=run_data_collection, args=(cpu_threshold, disk_threshold))
