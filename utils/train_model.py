@@ -9,6 +9,9 @@ import matplotlib
 import matplotlib.pyplot as plt
 from datetime import datetime
 from config.config import MODEL_FILE, TRAIN_DIR
+from config.db_config import DatabaseManager
+import uuid
+from mysql.connector import Error
 
 matplotlib.use('Agg')  # Tkinter 대신 Agg 백엔드 사용
 
@@ -90,6 +93,34 @@ def train():
             callbacks=[early_stopping]  # Early Stopping 적용
         )
         
+        db = DatabaseManager()
+        connection = db.get_connection()
+        if connection:
+            try:
+                cursor = connection.cursor()
+                # MAC 주소를 기반으로 uid 가져오기
+                mac = uuid.getnode()
+                cursor.execute("SELECT uid FROM user WHERE mac = %s", (mac,))
+                result = cursor.fetchone()
+                
+                if result:
+                    uid = result[0]
+                    # 해당 uid의 last_training_time 업데이트
+                    current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                    cursor.execute("""
+                        UPDATE count 
+                        SET last_training_time = %s 
+                        WHERE uid = %s
+                    """, (current_time, uid))
+                    connection.commit()
+                    print(f"사용자 {uid}의 학습 시간이 업데이트되었습니다.")
+                else:
+                    print("사용자를 찾을 수 없습니다.")
+            except Error as e:
+                print(f"학습 시간 업데이트 오류: {e}")
+            finally:
+                cursor.close()
+                
         # 학습 곡선 시각화
         plot_training_history(history)
 
