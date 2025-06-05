@@ -9,10 +9,23 @@ from config.db_config import DatabaseManager
 from config.config import MODEL_FILE
 import uuid
 from mysql.connector import Error
+from apscheduler.schedulers.background import BackgroundScheduler
 
-def call_fileindexing():
+# fileindexingproject/main.py 실행을 위한 함수
+def _run_file_indexing_job():
     project_path = r"C:\Users\default.DESKTOP-A742PF6\Desktop\H\capstone\Local-File-Organizer\fileindexingproject\main.py"
-    subprocess.run(["python", project_path, "auto"], check=True)
+    try:
+        print(" APScheduler job: 파일 인덱싱 스크립트 실행 시도")
+        subprocess.run(["python", project_path, "auto"], check=True, capture_output=True, text=True)
+        print(" APScheduler job: 파일 인덱싱 스크립트 실행 완료")
+    except subprocess.CalledProcessError as e:
+        print(f" APScheduler job: 파일 인덱싱 스크립트 실행 오류: {e}")
+        print(f"Stdout: {e.stdout}")
+        print(f"Stderr: {e.stderr}")
+    except FileNotFoundError:
+        print(f" APScheduler job: 파일 인덱싱 스크립트 경로 오류: {project_path}")
+    except Exception as e:
+        print(f" APScheduler job: 예상치 못한 오류 발생 - {e}")
 
 def log_prediction(uid, timestamp, predicted):
     """예측 결과를 데이터베이스에 저장"""
@@ -34,7 +47,7 @@ def log_prediction(uid, timestamp, predicted):
         finally:
             cursor.close()
 
-def predict():
+def predict(scheduler: BackgroundScheduler):
     window_size = 20
     future_steps = 6
     
@@ -91,8 +104,8 @@ def predict():
 
     # 유휴 상태 예측 결과 출력
     if pred.mean() > 0.55:
-        print("30분간 유휴 상태 → 파일 정리 시작")
-        call_fileindexing()
+        print("30분간 유휴 상태로 예측됨 → 파일 정리 작업 스케줄링")
+        scheduler.add_job(_run_file_indexing_job)
     else:
-        print("활성 상태 → 대기 중")
+        print("활성 상태로 예측됨 → 대기 중")
     print("==============================================")

@@ -27,6 +27,10 @@ lstm/
 ## 실행 방법
 
 ```
+conda env list
+
+conda activate local_file_organizer
+
 pip install [필요 라이브러리]
 
 python main.py
@@ -41,9 +45,3 @@ python main.py
 - Long Short-Term Memory(긴 단기 기억) - 더 긴 기간의 패턴 기억, 예측 가능
 
 - 시계열 예측 기술
-
-## ToDo
-
-- 평가 과정 구축
-
-- 통합

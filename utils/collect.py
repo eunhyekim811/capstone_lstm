@@ -56,6 +56,7 @@ def calibrate(duration=300, interval=10):  #duration(초) 동안 interval(초) �
     while time.time() < end_time:
         cpu = psutil.cpu_percent(interval=None)
         disk = psutil.disk_usage('/').percent
+        print(f"cpu: {cpu}, disk: {disk}")
         samples.append((cpu, disk))
         time.sleep(interval)
 
@@ -117,8 +118,8 @@ def start_collection(cpu_threshold, disk_threshold):   # count 테이블에 현�
         disk = psutil.disk_usage('/').percent  # 디스크 사용률
         
         # 유휴 여부
-        # 마우스 클릭 수와 키보드 입력 수의 합이 3보다 작음 + cpu 사용률 10% 미만 + 디스크 사용률 10% 미만 -> 유휴
-        label = 1 if (mouse_count + keyboard_count < 5 and cpu < cpu_threshold and disk < disk_threshold) else 0
+        # 마우스 클릭 수와 키보드 입력 수의 합이 3보다 작음 + cpu 사용률 10% 미만 -> 유휴
+        label = 1 if (mouse_count + keyboard_count < 5 and cpu < cpu_threshold) else 0
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
         # 데이터베이스에 저장
