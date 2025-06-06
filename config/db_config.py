@@ -102,6 +102,15 @@ def init_db():
                     FOREIGN KEY (uid) REFERENCES user(uid)
                 )
             """)
+
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS threshold (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    uid INT,
+                    cpu_threshold FLOAT NOT NULL DEFAULT 0.0,
+                    FOREIGN KEY (uid) REFERENCES user(uid)
+                )
+            """)
             
             connection.commit()
             print("데이터베이스와 테이블이 성공적으로 생성되었습니다.")
@@ -137,3 +146,50 @@ def add_user(mac: int):
             return None
         finally:
             cursor.close() 
+
+# thread 테이블에서 cpu_thread 조회
+def get_cpu_thread(uid):
+    db = DatabaseManager()
+    connection = db.get_connection()
+    if connection:
+        try:
+            cursor = connection.cursor()
+            query = "SELECT cpu_threshold FROM threshold WHERE uid = %s"
+            cursor.execute(query, (uid,))
+            result = cursor.fetchone()
+            if result:
+                return result[0]  # cpu_threshold 값 반환
+            return None
+        except Error as e:
+            print(f"CPU 임계값 조회 오류: {e}")
+            return None
+        finally:
+            if connection.is_connected():
+                cursor.close()
+    return None
+
+# thread 테이블에 cpu_thread 저장 또는 업데이트
+def save_cpu_thread(uid, cpu_thread_value):
+    db = DatabaseManager()
+    connection = db.get_connection()
+    if connection:
+        try:
+            cursor = connection.cursor()
+            # 먼저 해당 uid의 데이터가 있는지 확인
+            cursor.execute("SELECT id FROM threshold WHERE uid = %s", (uid,))
+            if cursor.fetchone():
+                # 데이터가 있으면 UPDATE
+                query = "UPDATE threshold SET cpu_threshold = %s WHERE uid = %s"
+                values = (cpu_thread_value, uid)
+            else:
+                # 데이터가 없으면 INSERT
+                query = "INSERT INTO threshold (uid, cpu_threshold) VALUES (%s, %s)"
+                values = (uid, cpu_thread_value)
+            cursor.execute(query, values)
+            connection.commit()
+            print(f"사용자 {uid}의 CPU 임계값 {cpu_thread_value} 저장/업데이트 완료.")
+        except Error as e:
+            print(f"CPU 임계값 저장 오류: {e}")
+        finally:
+            if connection.is_connected():
+                cursor.close() 

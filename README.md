@@ -45,3 +45,8 @@ python main.py
 - Long Short-Term Memory(긴 단기 기억) - 더 긴 기간의 패턴 기억, 예측 가능
 
 - 시계열 예측 기술
+
+## TODO
+- predict 5분씩 6스텝 - 예측값 그대로 데이터베이스에 저장
+
+- 데이터베이스에 저장된 데이터가 이미 있는 경우 calibrate()의 동작 테스트

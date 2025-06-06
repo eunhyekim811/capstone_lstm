@@ -7,7 +7,7 @@ import threading
 from .power_check import check_power    
 from datetime import datetime
 import uuid
-from config.db_config import DatabaseManager, add_user
+from config.db_config import DatabaseManager, add_user, get_cpu_thread, save_cpu_thread
 import statistics
 from mysql.connector import Error
 
@@ -53,23 +53,26 @@ def calibrate(duration=300, interval=10):  #duration(초) 동안 interval(초) �
     end_time = time.time() + duration
 
     print(f"[Calibration] {duration}s 동안 샘플 수집을 시작합니다...")
-    while time.time() < end_time:
+    while time.time() < end_time and not stop_event.is_set():
         cpu = psutil.cpu_percent(interval=None)
-        disk = psutil.disk_usage('/').percent
-        print(f"cpu: {cpu}, disk: {disk}")
-        samples.append((cpu, disk))
-        time.sleep(interval)
+        print(f"cpu: {cpu}")
+        samples.append(cpu)
+        if stop_event.wait(interval):
+            print("[Calibration] 중단 요청으로 샘플 수집을 중지합니다.")
+            break
 
     print(f"[Calibration] 샘플 수집 완료. {len(samples)}개 샘플 수집")
     
-    cpus, disks = zip(*samples)
-    cpu_threshold = statistics.mean(cpus)
-    disk_threshold = statistics.mean(disks)
-    print(f"[Calibration 완료] cpu_thr={cpu_threshold:.2f}, disk_thr={disk_threshold:.2f}")
+    if not samples:
+        print("[Calibration] 수집된 샘플이 없어 기본 CPU 임계값을 반환합니다.")
+        return 10.0
 
-    return cpu_threshold, disk_threshold
+    cpu_threshold = statistics.mean(samples)
+    print(f"[Calibration 완료] cpu_thr={cpu_threshold:.2f}")
+
+    return cpu_threshold
         
-def start_collection(cpu_threshold, disk_threshold):   # count 테이블에 현재 시간 저장 (=시작 시간)
+def start_collection():
     global mouse_count, keyboard_count
     mouse_count = 0
     keyboard_count = 0
@@ -78,11 +81,24 @@ def start_collection(cpu_threshold, disk_threshold):   # count 테이블에 현�
     mac = uuid.getnode()  # MAC 주소를 정수로 사용
     uid = add_user(mac)
     
-    print(mac)
+    print(f"사용자 UID: {uid}")
 
     if uid is None:
         print("사용자 등록 실패. 데이터 수집을 중단합니다.")
         return
+
+    # CPU 및 Disk 임계값 결정
+    db_cpu_threshold = get_cpu_thread(uid)
+
+    if db_cpu_threshold is not None:
+        cpu_threshold = db_cpu_threshold
+        print(f"[Threshold] 데이터베이스에서 CPU 임계값 로드: {cpu_threshold:.2f}")
+    else:
+        cpu_threshold = calibrate()
+        save_cpu_thread(uid, cpu_threshold)
+        print(f"[Threshold] 새로운 CPU 임계값 저장: {cpu_threshold:.2f}")
+    
+    print(f"[Threshold] 최종 CPU 임계값: {cpu_threshold:.2f}")
 
     # count 테이블에 초기 데이터 삽입
     db = DatabaseManager()
