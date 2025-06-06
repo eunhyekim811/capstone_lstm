@@ -2,6 +2,7 @@ from tensorflow.keras.models import Sequential, Model, load_model
 from tensorflow.keras.layers import LSTM, Dense, Dropout, Input, TimeDistributed
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.callbacks import EarlyStopping
+from tensorflow.keras import backend as K
 from .preprocess import load_and_preprocess
 import os
 import numpy as np
@@ -131,3 +132,6 @@ def train():
         print(f"학습 오류: {e}")
     except Exception as e:
         print(f"예상치 못한 오류 발생: {e}")
+    finally:
+        K.clear_session()
+        print("학습 후 Keras 세션 정리 완료")

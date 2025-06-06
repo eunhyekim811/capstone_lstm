@@ -27,6 +27,10 @@ lstm/
 ## 실행 방법
 
 ```
+conda env list
+
+conda activate local_file_organizer
+
 pip install [필요 라이브러리]
 
 python main.py
@@ -42,8 +46,7 @@ python main.py
 
 - 시계열 예측 기술
 
-## ToDo
+## TODO
+- predict 5분씩 6스텝 - 예측값 그대로 데이터베이스에 저장
 
-- 평가 과정 구축
-
-- 통합
+- 데이터베이스에 저장된 데이터가 이미 있는 경우 calibrate()의 동작 테스트
