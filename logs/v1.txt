@@ -1,0 +1,139 @@
+PS C:\Users\default.DESKTOP-A742PF6\Desktop\H\capstone\capstone_lstm> python .\main.py
+2025-06-06 17:45:39.516412: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2025-06-06 17:45:40.016997: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+데이터베이스 연결이 성공적으로 설정되었습니다.
+데이터베이스와 테이블이 성공적으로 생성되었습니다.
+>> 사용자 로그 수집 시작
+>> 모델 학습 대기 중 (20분마다 확인)
+>> 모델 예측 대기 중 (30분마다 확인)
+>> 평가 대기 중 (60분마다 확인)
+사용자 UID: 1
+[Threshold] 데이터베이스에서 CPU 임계값 로드: 0.80
+[Threshold] 최종 CPU 임계값: 0.80
+데이터 부족 : 18개
+WARNING:tensorflow:From C:\Users\default.DESKTOP-A742PF6\AppData\Local\Programs\Python\Python312\Lib\site-packages\keras\src\backend\common\global_state.py:82: The name tf.reset_default_graph is deprecated. Please use tf.compat.v1.reset_default_graph instead.
+
+학습 후 Keras 세션 정리 완료
+>> 모델 학습 대기 중 (20분마다 확인)
+2025-06-06 18:15:41.968699: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: SSE3 SSE4.1 SSE4.2 AVX AVX2 AVX512F AVX512_VNNI AVX512_BF16 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+1/1 ━━━━━━━━━━━━━━━━━━━━ 0s 128ms/step
+==============================================
+전체 평가 결과 : 손실 0.6908, 정확도 0.5893
+예측 결과 : [1 1 1 1 1 1] (원본: [0.5030042  0.5026287  0.5022894  0.50200903 0.501794   0.50164115])
+활성 상태로 예측됨 → 대기 중
+==============================================
+예측 후 Keras 세션 정리 완료
+>> 모델 예측 대기 중 (30분마다 확인)
+데이터 부족 : 38개
+학습 후 Keras 세션 정리 완료
+>> 모델 학습 대기 중 (20분마다 확인)
+실제 결과 시간대에 데이터가 부족합니다.
+실제 결과 시간대에 데이터가 부족합니다.
+전체 시퀀스 정확도 (전체 3개 예측): 0.2222
+>> 평가 대기 중 (60분마다 확인)
+데이터 부족 : 58개
+학습 후 Keras 세션 정리 완료
+>> 모델 학습 대기 중 (20분마다 확인)
+1/1 ━━━━━━━━━━━━━━━━━━━━ 0s 123ms/step
+==============================================
+전체 평가 결과 : 손실 0.6911, 정확도 0.6264
+예측 결과 : [1 1 1 1 1 1] (원본: [0.50483775 0.5041227  0.50354886 0.503098   0.50275064 0.5024878 ])
+활성 상태로 예측됨 → 대기 중
+==============================================
+예측 후 Keras 세션 정리 완료
+>> 모델 예측 대기 중 (30분마다 확인)
+데이터 부족 : 78개
+학습 후 Keras 세션 정리 완료
+>> 모델 학습 대기 중 (20분마다 확인)
+1/1 ━━━━━━━━━━━━━━━━━━━━ 0s 102ms/step
+==============================================
+전체 평가 결과 : 손실 0.6899, 정확도 0.7045
+예측 결과 : [1 1 1 1 1 1] (원본: [0.50563496 0.50469553 0.50396156 0.5033963  0.50296664 0.5026445 ])
+활성 상태로 예측됨 → 대기 중
+==============================================
+예측 후 Keras 세션 정리 완료
+>> 모델 예측 대기 중 (30분마다 확인)
+데이터 부족 : 98개
+학습 후 Keras 세션 정리 완료
+>> 모델 학습 대기 중 (20분마다 확인)
+실제 결과 시간대에 데이터가 부족합니다.
+실제 결과 시간대에 데이터가 부족합니다.
+전체 시퀀스 정확도 (전체 5개 예측): 0.2667
+>> 평가 대기 중 (60분마다 확인)
+Epoch 1/50
+1/1 ━━━━━━━━━━━━━━━━━━━━ 0s 176ms/step - accuracy: 0.6927 - loss: 0.6898
+WARNING:tensorflow:5 out of the last 10 calls to <function TensorFlowTrainer._make_function.<locals>.multi_step_on_iterator at 0x000002AE2BE04D60> triggered tf.function retracing. Tracing is expensive and the excessive number of tracings could be due to (1) creating @tf.function repeatedly in a loop, (2) passing tensors with different shapes, (3) passing Python objects instead of tensors. For (1), please define your @tf.function outside of the loop. For (2), @tf.function has reduce_retracing=True option that can avoid unnecessary retracing. For (3), please refer to https://www.tensorflow.org/guide/function#controlling_retracing and https://www.tensorflow.org/api_docs/python/tf/function for  more details.
+3/3 ━━━━━━━━━━━━━━━━━━━━ 1s 139ms/step - accuracy: 0.6795 - loss: 0.6901 - val_accuracy: 0.7222 - val_loss: 0.6913
+Epoch 2/50
+3/3 ━━━━━━━━━━━━━━━━━━━━ 0s 29ms/step - accuracy: 0.6965 - loss: 0.6894 - val_accuracy: 0.7222 - val_loss: 0.6889
+Epoch 3/50
+3/3 ━━━━━━━━━━━━━━━━━━━━ 0s 29ms/step - accuracy: 0.7013 - loss: 0.6872 - val_accuracy: 0.7222 - val_loss: 0.6846
+Epoch 4/50
+3/3 ━━━━━━━━━━━━━━━━━━━━ 0s 22ms/step - accuracy: 0.7035 - loss: 0.6840 - val_accuracy: 0.7222 - val_loss: 0.6775
+Epoch 5/50
+==============================================
+전체 평가 결과 : 손실 0.6903, 정확도 0.6850
+예측 결과 : [1 1 1 1 1 1] (원본: [0.505986   0.50495714 0.50415385 0.503535   0.50306416 0.5027105 ])
+활성 상태로 예측됨 → 대기 중
+==============================================
+예측 후 Keras 세션 정리 완료
+>> 모델 예측 대기 중 (30분마다 확인)
+3/3 ━━━━━━━━━━━━━━━━━━━━ 1s 194ms/step - accuracy: 0.6699 - loss: 0.6811 - val_accuracy: 0.7222 - val_loss: 0.6674
+Epoch 6/50
+3/3 ━━━━━━━━━━━━━━━━━━━━ 0s 19ms/step - accuracy: 0.6903 - loss: 0.6736 - val_accuracy: 0.7222 - val_loss: 0.6532
+Epoch 7/50
+3/3 ━━━━━━━━━━━━━━━━━━━━ 0s 17ms/step - accuracy: 0.6749 - loss: 0.6629 - val_accuracy: 0.7222 - val_loss: 0.6312
+Epoch 8/50
+3/3 ━━━━━━━━━━━━━━━━━━━━ 0s 16ms/step - accuracy: 0.6528 - loss: 0.6518 - val_accuracy: 0.7222 - val_loss: 0.6083
+Epoch 9/50
+3/3 ━━━━━━━━━━━━━━━━━━━━ 0s 19ms/step - accuracy: 0.6823 - loss: 0.6309 - val_accuracy: 0.7222 - val_loss: 0.5923
+Epoch 10/50
+3/3 ━━━━━━━━━━━━━━━━━━━━ 0s 18ms/step - accuracy: 0.6664 - loss: 0.6166 - val_accuracy: 0.7222 - val_loss: 0.5881
+Epoch 11/50
+3/3 ━━━━━━━━━━━━━━━━━━━━ 0s 18ms/step - accuracy: 0.7250 - loss: 0.6068 - val_accuracy: 0.7222 - val_loss: 0.5985
+Epoch 12/50
+3/3 ━━━━━━━━━━━━━━━━━━━━ 0s 19ms/step - accuracy: 0.7134 - loss: 0.6058 - val_accuracy: 0.7222 - val_loss: 0.5961
+Epoch 13/50
+3/3 ━━━━━━━━━━━━━━━━━━━━ 0s 18ms/step - accuracy: 0.7290 - loss: 0.5983 - val_accuracy: 0.7222 - val_loss: 0.5888
+Epoch 14/50
+3/3 ━━━━━━━━━━━━━━━━━━━━ 0s 20ms/step - accuracy: 0.7313 - loss: 0.5978 - val_accuracy: 0.7222 - val_loss: 0.5894
+Epoch 15/50
+3/3 ━━━━━━━━━━━━━━━━━━━━ 0s 19ms/step - accuracy: 0.7272 - loss: 0.5904 - val_accuracy: 0.7222 - val_loss: 0.6022
+사용자 1의 학습 시간이 업데이트되었습니다.
+모델 학습 및 저장 완료
+학습 후 Keras 세션 정리 완료
+>> 모델 학습 대기 중 (20분마다 확인)
+데이터 부족 : 0개
+학습 후 Keras 세션 정리 완료
+>> 모델 학습 대기 중 (20분마다 확인)
+WARNING:tensorflow:5 out of the last 5 calls to <function TensorFlowTrainer.make_predict_function.<locals>.one_step_on_data_distributed at 0x000002AE2EB74860> triggered tf.function retracing. Tracing is expensive and the excessive number of tracings could be due to (1) creating @tf.function repeatedly in a loop, (2) passing tensors with different shapes, (3) passing Python objects instead of tensors. For (1), please define your @tf.function outside of the loop. For (2), @tf.function has reduce_retracing=True option that can avoid unnecessary retracing. For (3), please refer to https://www.tensorflow.org/guide/function#controlling_retracing and https://www.tensorflow.org/api_docs/python/tf/function for  more details.
+1/1 ━━━━━━━━━━━━━━━━━━━━ 0s 111ms/step
+==============================================
+전체 평가 결과 : 손실 0.6070, 정확도 0.7083
+예측 결과 : [1 1 1 1 1 1] (원본: [0.6588253  0.6691849  0.6762903  0.6809006  0.6836243  0.68492985])
+30분간 유휴 상태로 예측됨 → 파일 정리 작업 스케줄링
+==============================================
+Stdout: --------------------------------------------------
+**NOTE: Silent mode logs all outputs to a text file instead of displaying them in the terminal.
+--------------------------------------------------
+[Auto Mode] Input path: C:\Users\default.DESKTOP-A742PF6\Desktop\H\capstone\test2
+[Auto Mode] Output path: C:\Users\default.DESKTOP-A742PF6\Desktop\H\capstone\organized_folder
+
+Stderr: llama_init_from_model: n_ctx_per_seq (2048) < n_ctx_train (8192) -- the full capacity of the model will not be utilized
+Traceback (most recent call last):
+  File "C:\Users\default.DESKTOP-A742PF6\Desktop\H\capstone\Local-File-Organizer\fileindexingproject\main.py", line 176, in <module>
+    main(auto_mode)
+  File "C:\Users\default.DESKTOP-A742PF6\Desktop\H\capstone\Local-File-Organizer\fileindexingproject\main.py", line 105, in main
+    initialize_models()
+  File "C:\Users\default.DESKTOP-A742PF6\Desktop\H\capstone\Local-File-Organizer\fileindexingproject\main.py", line 75, in initialize_models
+    print("\u2705 텍스트 모델 로컬 로드 완료!")
+UnicodeEncodeError: 'cp949' codec can't encode character '\u2705' in position 0: illegal multibyte sequence
+
+>> 종료 요청됨. 스레드를 정리합니다...
+>> THREAD TERMINATED: run_prediction
+>> THREAD TERMINATED: run_training
+>> THREAD TERMINATED: run_data_collection
+>> THREAD TERMINATED: run_evaluation
+>> 프로그램이 정상적으로 종료되었습니다.
+>> Main thread is exiting.
