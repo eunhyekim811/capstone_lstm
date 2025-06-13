@@ -101,12 +101,12 @@ if __name__ == "__main__":
         t1 = threading.Thread(target=run_data_collection)
         t2 = threading.Thread(target=run_training)
         t3 = threading.Thread(target=run_prediction, args=(scheduler,))
-        t4 = threading.Thread(target=run_evaluation)
+        # t4 = threading.Thread(target=run_evaluation)
 
         t1.start()
         t2.start()
         t3.start()
-        t4.start()
+        # t4.start()
 
         # 메인 스레드는 대기
         while True:
@@ -119,7 +119,7 @@ if __name__ == "__main__":
         t1.join()
         t2.join()
         t3.join()
-        t4.join()
+        # t4.join()
 
         # 스케줄러 종료
         scheduler.shutdown()

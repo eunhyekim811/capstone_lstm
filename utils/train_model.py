@@ -52,7 +52,7 @@ def train():
         future_steps = 6
         X, y, scaler = load_and_preprocess(window_size=window_size, future_steps=future_steps)
 
-        if len(X) < 100:
+        if len(X) < 100 or not os.path.exists(MODEL_FILE):
             print(f"데이터 부족 : {len(X)}개")
             return
         
